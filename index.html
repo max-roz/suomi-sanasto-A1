@@ -1313,6 +1313,8 @@ function resetSession(onlyM = false, all = false) {
 function speak(text, lang = 'fi', manual = false) {
   if ((isMuted && !manual) || isSpeaking) return;
   const btn = $("speakBtn");
+  let fallbackCalled = false;
+
   const reset = () => {
     isSpeaking = false;
     if (btn) { btn.disabled = false; btn.innerHTML = ICONS.speak; }
@@ -1332,7 +1334,10 @@ function speak(text, lang = 'fi', manual = false) {
   const clean = text.replace(/\([^)]*\)/g, '').split('/').at(0).split(',').at(0).trim();
   const locale = lang === 'ru' ? 'ru-RU' : 'fi-FI';
 
-  const fb = () => {
+  const runFallback = () => {
+    if (fallbackCalled) return;
+    fallbackCalled = true;
+    currentAudio = null;
     if (!('speechSynthesis' in window)) { reset(); return; }
     const u = new SpeechSynthesisUtterance(clean);
     const vs = window.speechSynthesis.getVoices().filter(v => v.lang.toLowerCase().includes(lang));
@@ -1349,10 +1354,10 @@ function speak(text, lang = 'fi', manual = false) {
     const a = new Audio('https://google.com' + lang + '&client=tw-ob&q=' + encodeURIComponent(clean));
     currentAudio = a;
     a.onended = reset;
-    a.onerror = () => { currentAudio = null; fb(); };
-    a.play().catch(() => { currentAudio = null; fb(); });
+    a.onerror = runFallback;
+    a.play().catch(runFallback);
   } else {
-    fb();
+    runFallback();
   }
 
   setTimeout(() => { if (isSpeaking) reset(); }, 3500);
