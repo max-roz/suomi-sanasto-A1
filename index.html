@@ -59,7 +59,7 @@
   .umlaut-btn { height: 34px; width: 38px; font-size: 15px; font-weight: 700; background: var(--primary-light); color: var(--primary-dark); border-radius: 9px; display: inline-flex; align-items: center; justify-content: center; }
 
   .word-box { text-align: center; padding: 22px 10px 16px; background: #f7f9fc; border-radius: 14px; border: 1px solid #eef2f7; margin-bottom: 10px; display: flex; flex-direction: column; justify-content: flex-start; min-height: 74px; }
-  .word-box.fixed-card { height: 112px; }
+  .word-box.fixed-card { height: 100px; }
   .word-box.fixed-card .word-main { min-height: 30px; }
   .word-main { font-size: 21px; font-weight: 700; color: var(--primary-dark); margin: 0; line-height: 1.3; }
   .word-trans { font-size: 18px; font-weight: 500; color: #222; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #d0dbe8; line-height: 1.3; }
@@ -1409,17 +1409,19 @@ function renderCard() {
     : '';
   const hdr = `<div class="header-row"><span class="tag">Тема ${w.k}</span>${umlautHTML}${speakBtnHTML}</div>`;
 
-  if (currentMode === 'flashcards') {
+    if (currentMode === 'flashcards') {
     const f = isFi ? w.fi : w.ru, b = isFi ? w.ru : w.fi;
     area.innerHTML = hdr +
-      '<div class="word-box fixed-card" onclick="isFlipped=!isFlipped;renderCard()" style="cursor:pointer">' +
+      '<div class="word-box fixed-card">' +
       '<div class="word-main">' + f + '</div>' +
-      (isFlipped ? '<div class="word-trans">' + b + '</div>' : '<div class="hint-tap">Нажми на карточку для перевода</div>') +
+      '<div class="word-trans">' + (isFlipped ? b : '') + '</div>' +
       '</div><div class="buttons">' +
       (!isFlipped
         ? '<button class="btn-primary" onclick="isFlipped=true;renderCard()">Показать перевод</button>'
-        : '<button class="btn-primary" onclick="nextCard(false, true)">Дальше →</button>') +
+        : '<button class="btn-primary" onclick="nextCard(false, true)">Следующее слово</button>') +
       '</div>';
+
+
 
   } else if (currentMode === 'quiz') {
     const opts = getSmartOptions(w);
