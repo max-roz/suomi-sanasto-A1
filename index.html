@@ -1388,11 +1388,16 @@ function speak(text, lang = 'fi', manual = false) {
   setTimeout(() => { if (isSpeaking) reset(); }, 3500);
 }
 
+function clearHint() {
+  const fb = $("typeFeedback");
+  if (fb && !fb.querySelector('.wrong')) fb.innerHTML = '';
+}
+
 function renderCard() {
   const inL = dictionary.filter(w => selectedLessons.has(w.k));
   const done = inL.filter(w => learnedWords.has(w.fi)).length;
   $("globalStatText").innerHTML = `Освоено в темах: <b>${done}</b> из <b>${inL.length}</b>`;
-   const statsBar = document.querySelector('.stats');
+  const statsBar = document.querySelector('.stats');
   if (currentMode === 'flashcards') {
     statsBar.style.display = 'none';
   } else {
@@ -1402,7 +1407,6 @@ function renderCard() {
     $("learnedText").textContent = `В раунде: ${learnedCount} / ${totalInRound}`;
   }
 
- 
   $("progressBar").style.width = totalInRound ? `${(learnedCount / totalInRound) * 100}%` : '100%';
   const area = $("gameArea");
   if (!pool.length) {
@@ -1423,8 +1427,7 @@ function renderCard() {
     area.innerHTML =
       `<div class="word-box"><div style="color:var(--success-text)">${ICONS.trophy}</div>` +
       `<div class="word-main" style="color:var(--success-text)">Hyvää työtä!</div>` +
-            `<div class="word-trans" style="border:none">Раунд завершен!${currentMode === 'flashcards' ? '' : ` Ошибок: <b>${errorCount}</b>`}${mHTML}</div></div>` +
-
+      `<div class="word-trans" style="border:none">Раунд завершен!${currentMode === 'flashcards' ? '' : ` Ошибок: <b>${errorCount}</b>`}${mHTML}</div></div>` +
       `<div class="buttons">${mArr.length ? `<button class="btn-wrong" onclick="resetSession(true)">Повторить ошибки</button>` : ''}` +
       `<button class="btn-primary" onclick="resetSession(false)">Следующие слова →</button></div>`;
     return;
@@ -1451,47 +1454,66 @@ function renderCard() {
         : '<button class="btn-primary" onclick="nextCard(false, true)">Следующее слово</button>') +
       '</div>';
     if (!isFlipped) speak(boxWord, boxLang, false);
-
-
-
-
   } else if (currentMode === 'quiz') {
     const opts = getSmartOptions(w);
-    area.innerHTML = hdr + `<div class="word-box"><div class="word-main">${boxWord}</div></div>` +
-      `<div class="options-grid">` + opts.map(o => `<button class="opt-btn" onclick="checkQuiz(this, ${o.fi === w.fi})">${isFi ? o.ru : o.fi}</button>`).join('') + `</div>`;
-    } else if (currentMode === 'typing') {
+    area.innerHTML = hdr +
+      '<div class="word-box"><div class="word-main">' + boxWord + '</div></div>' +
+      '<div class="options-grid">' +
+      opts.map(o => '<button class="opt-btn" onclick="checkQuiz(this, ' + (o.fi === w.fi) + ')">' + (isFi ? o.ru : o.fi) + '</button>').join('') +
+      '</div><div id="typeFeedback"></div>' +
+      '<div class="buttons" id="typeBtns" style="display:none;"></div>';
+  } else if (currentMode === 'typing') {
     const ph = isFi ? 'Напишите по-русски...' : 'Напишите по-фински...';
     area.innerHTML = hdr +
       '<div class="word-box"><div class="word-main">' + boxWord + '</div></div>' +
       '<input type="text" id="typeInput" name="q_field_' + Date.now() + '" class="answer-input" placeholder="' + ph + '" ' +
       'autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="text" ' +
-      'onfocus="if($(\'typeFeedback\')&&!$(\'typeFeedback\').querySelector(\'.wrong\'))$(\'typeFeedback\').innerHTML=\'\'" ' +
-      'oninput="if($(\'typeFeedback\')&&!$(\'typeFeedback\').querySelector(\'.wrong\'))$(\'typeFeedback\').innerHTML=\'\'" ' +
+      'onfocus="clearHint()" oninput="clearHint()" ' +
       'onkeydown="if(event.key===\'Enter\')checkTyping()">' +
       '<div id="typeFeedback"></div><div class="buttons" id="typeBtns">' +
       '<button class="btn-secondary" onclick="showAns()">Подсказка</button>' +
       '<button class="btn-primary" onclick="checkTyping()">Проверить</button></div>';
     setTimeout(() => $("typeInput")?.focus(), 50);
   }
+}
 
-}
-function nextCard(k) {
+function nextCard(k, studyOnly = false) {
   const c = pool.shift();
-  if (k) { learnedCount++; learnedWords.add(c.fi); saveStorage(); }
-  else { errorCount++; sessionMistakes.set(c.fi, c); pool.push(c); }
-  isFlipped = false; renderCard();
+  if (studyOnly) {
+    learnedCount++;
+  } else if (k) {
+    learnedCount++;
+    learnedWords.add(c.fi);
+    saveStorage();
+  } else {
+    errorCount++;
+    sessionMistakes.set(c.fi, c);
+    pool.push(c);
+  }
+  isFlipped = false;
+  renderCard();
 }
+
 function checkQuiz(btn, ok) {
   document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
-  const w = pool.at(0); speak(w.fi, 'fi', false);
+  const w = pool.at(0);
+  const btns = $("typeBtns");
+  speak(w.fi, 'fi', false);
   const exp = direction === 'fi-ru' ? w.ru : w.fi;
-  if (ok) { btn.classList.add('correct'); setTimeout(() => nextCard(true), 900); }
-  else {
+
+  if (ok) {
+    btn.classList.add('correct');
+    btns.innerHTML = '<button class="btn-success" onclick="nextCard(true)">Дальше →</button>';
+  } else {
     btn.classList.add('wrong');
-    document.querySelectorAll('.opt-btn').forEach(b => { if (b.textContent === exp) b.classList.add('correct'); });
-    setTimeout(() => nextCard(false), 1600);
+    document.querySelectorAll('.opt-btn').forEach(b => {
+      if (b.textContent === exp) b.classList.add('correct');
+    });
+    btns.innerHTML = '<button class="btn-wrong" onclick="nextCard(false)">Дальше →</button>';
   }
+  btns.style.display = 'flex';
 }
+
 function addChar(c) {
   const i = $("typeInput");
   i.value += c;
@@ -1510,7 +1532,6 @@ function showAns() {
   $("typeFeedback").innerHTML =
     '<div class="feedback-box correct" style="letter-spacing:1px"><b>' + masked + '</b></div>';
 }
-
 
 function checkTyping() {
   const val = $("typeInput").value.trim().toLowerCase().replace(/[!?.]/g, '');
@@ -1538,6 +1559,7 @@ function checkTyping() {
     $("typeBtns").innerHTML = '<button class="btn-wrong" onclick="nextCard(false)">Дальше →</button>';
   }
 }
+
 function toggleHelp(show) {
   $("helpModal").classList.toggle("open", show);
 }
