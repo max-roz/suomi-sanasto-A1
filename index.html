@@ -107,44 +107,58 @@
   .word-box { padding: 11px 10px; min-height: 48px; margin-bottom: 7px; }
   .answer-input { height: 36px; font-size: 16px; }
 
+    body { padding: 6px; }
+  .wrap { max-width: 540px; width: 100%; height: 100%; display: flex; flex-direction: column; gap: 5px; }
+
+  .panel { background: #fff; border-radius: 18px; box-shadow: 0 10px 32px rgba(0,0,0,0.22); padding: 12px 14px; width: 100%; }
+  .panel-top { flex-shrink: 0; padding-bottom: 10px; }
+  .panel-main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+  .controls-stack { margin-bottom: 0; }
+  .progress { display: none; }
 
 </style>
 
 </head>
 <body>
-<div class="card">
-  <div class="section-head">
-    <span>Темы:</span>
-    <div>
-      <button class="link-btn" onclick="selectAll(true)">Все</button> ·
-      <button class="link-btn" onclick="selectAll(false)">Сброс</button>
+<div class="wrap">
+  <div class="panel panel-top">
+    <div class="section-head">
+      <span>Уроки:</span>
+      <div>
+        <button class="link-btn" onclick="selectAll(true)">Все</button> ·
+        <button class="link-btn" onclick="selectAll(false)">Сброс</button>
+      </div>
+    </div>
+    <div class="lessons-grid" id="lessonsContainer"></div>
+    <div class="global-progress">
+      <span id="globalStatText">Освоено: 0 из 0</span>
+      <button class="link-btn" style="color:var(--error-text)" onclick="clearProgress()">Сбросить прогресс</button>
+    </div>
+    <div class="controls-stack">
+      <div class="modes-row" id="modesBar"></div>
+      <div class="settings-row">
+        <button class="mini-btn" id="dirBtn" onclick="toggleDirection()">Fi → Ru</button>
+        <button class="mini-btn" id="muteBtn" onclick="toggleMute()"></button>
+        <button class="mini-btn" id="sizeBtn" onclick="toggleRoundSize()">10 слов</button>
+      </div>
     </div>
   </div>
-  <div class="lessons-grid" id="lessonsContainer"></div>
-  <div class="global-progress">
-    <span id="globalStatText">Освоено: 0 из 0</span>
-    <button class="link-btn" style="color:var(--error-text)" onclick="clearProgress()">Сбросить прогресс</button>
-  </div>
-  <div class="controls-stack">
-    <div class="modes-row" id="modesBar"></div>
-    <div class="settings-row">
-      <button class="mini-btn" id="dirBtn" onclick="toggleDirection()">Fi → Ru</button>
-      <button class="mini-btn" id="muteBtn" onclick="toggleMute()"></button>
-      <button class="mini-btn" id="sizeBtn" onclick="toggleRoundSize()">10 слов</button>
+
+  <div class="panel panel-main">
+    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+    <div id="gameArea"></div>
+    <div class="stats">
+      <span id="progressText"></span>
+      <span id="errorsText" class="err-stat"></span>
+      <span id="learnedText"></span>
     </div>
-  </div>
-  <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
-  <div id="gameArea"></div>
-  <div class="stats">
-    <span id="progressText"></span>
-    <span id="errorsText" class="err-stat"></span>
-    <span id="learnedText"></span>
-  </div>
     <div class="footer-bar">
-    <span>Базовый словарь финского языка · A1</span>
-    <button type="button" class="link-btn" onclick="toggleHelp(true)">Справка</button>
+      <span>Базовый словарь финского языка · A1</span>
+      <button type="button" class="link-btn" onclick="toggleHelp(true)">Справка</button>
+    </div>
   </div>
 </div>
+
 
 <div class="help-modal" id="helpModal" onclick="if(event.target===this)toggleHelp(false)">
   <div class="help-box">
@@ -1468,7 +1482,7 @@ function addChar(c) {
   i.focus();
 }
 
-function showAns(full = false) {
+function showAns() {
   const w = pool.at(0), isFi = direction === 'fi-ru';
   const target = isFi ? w.ru.split('/').at(0).split(',').at(0).trim() : w.fi;
   const clean = target.replace(/[!?.]/g, '').trim();
@@ -1477,15 +1491,10 @@ function showAns(full = false) {
     return [wd.at(0), ...Array(wd.length - 2).fill('_'), wd.at(-1)].join(' ');
   }).join(' &nbsp;&nbsp; ');
 
-  if (!full) {
-    $("typeFeedback").innerHTML =
-      '<div class="feedback-box correct" style="letter-spacing:1px">Подсказка: <b>' + masked + '</b>' +
-      '<div style="margin-top:8px"><button type="button" class="link-btn" onclick="showAns(true)">Показать целиком</button></div></div>';
-  } else {
-    $("typeFeedback").innerHTML = '<div class="feedback-box correct">Ответ: <b>' + target + '</b></div>';
-    speak(w.fi, 'fi', false);
-  }
+  $("typeFeedback").innerHTML =
+    '<div class="feedback-box correct" style="letter-spacing:1px"><b>' + masked + '</b></div>';
 }
+
 
 function checkTyping() {
   const val = $("typeInput").value.trim().toLowerCase().replace(/[!?.]/g, '');
