@@ -58,8 +58,8 @@
   .umlauts { display: flex; gap: 6px; }
   .umlaut-btn { height: 34px; width: 38px; font-size: 15px; font-weight: 700; background: var(--primary-light); color: var(--primary-dark); border-radius: 9px; display: inline-flex; align-items: center; justify-content: center; }
 
-  .word-box { text-align: center; padding: 14px 10px; background: #f7f9fc; border-radius: 14px; border: 1px solid #eef2f7; margin-bottom: 10px; display: flex; flex-direction: column; justify-content: center; }
-  .word-box.fixed-card { height: 148px; justify-content: flex-start; padding-top: 26px; }
+  .word-box { text-align: center; padding: 22px 10px 16px; background: #f7f9fc; border-radius: 14px; border: 1px solid #eef2f7; margin-bottom: 10px; display: flex; flex-direction: column; justify-content: flex-start; min-height: 74px; }
+  .word-box.fixed-card { height: 112px; }
   .word-box.fixed-card .word-main { min-height: 30px; }
   .word-main { font-size: 21px; font-weight: 700; color: var(--primary-dark); margin: 0; line-height: 1.3; }
   .word-trans { font-size: 18px; font-weight: 500; color: #222; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #d0dbe8; line-height: 1.3; }
@@ -100,6 +100,12 @@
   .help-body { overflow-y: auto; padding-right: 4px; margin-bottom: 10px; }
   .help-box ul { margin: 0; padding-left: 16px; display: flex; flex-direction: column; gap: 6px; }
   .help-box b { color: var(--primary-dark); }
+
+  .controls-stack { margin-bottom: 6px; }
+  .progress { margin-bottom: 6px; }
+  .header-row { margin-bottom: 6px; min-height: 30px; }
+  .word-box { padding: 11px 10px; min-height: 48px; margin-bottom: 7px; }
+  .answer-input { height: 36px; font-size: 16px; }
 
 
 </style>
@@ -146,18 +152,27 @@
       <h2>Как работать с тренажером</h2>
       <button type="button" class="help-close" onclick="toggleHelp(false)">×</button>
     </div>
-    <div class="help-body">
+       <div class="help-body">
       <ul>
-        <li><b>Темы (1–9):</b> нажимайте на цифры, чтобы выбрать один или несколько разделов. В раунд попадают только еще не выученные слова.</li>
-        <li><b>Режимы:</b> <b>Карточки</b> — для знакомства со словами, <b>Тест</b> — выбор из 4 похожих вариантов, <b>Ввод</b> — тренировка правописания (подсказка откроет первую, последнюю букву и длину слова).</li>
-        <li><b>Управление:</b> <b>Fi ↔ Ru</b> меняет направление перевода, <b>Звук</b> включает/выключает автоозвучку (кнопка с облачком на карточке всегда озвучит слово вручную), <b>10 слов</b> задает количество слов в раунде.</li>
-        <li><b>Прогресс:</b> слова, отмеченные кнопкой «Знаю» или угаданные с первой попытки, сохраняются в памяти вашего браузера и больше не повторяются, пока вы не нажмете «Сбросить прогресс».</li>
+        <li><b>Темы (1–9):</b> нажимайте на цифры, чтобы выбрать один или несколько разделов. В режимах «Тест» и «Ввод» в раунд попадают только невыученные слова.</li>
+        <li><b>Режимы:</b><br>
+          — <b>Карточки</b>: знакомство со словами без учета в общем прогрессе;<br>
+          — <b>Тест</b>: выбор из 4 похожих вариантов;<br>
+          — <b>Ввод</b>: тренировка правописания (подсказка откроет первую, последнюю букву и длину слова).
+        </li>
+        <li><b>Управление:</b><br>
+          — <b>Fi ↔ Ru</b>: смена направления перевода;<br>
+          — <b>Звук</b>: включение и отключение автоозвучки (кнопка с облачком всегда озвучит слово вручную);<br>
+          — <b>10 слов</b>: выбор количества слов в раунде.
+        </li>
+        <li><b>Прогресс:</b> слова, угаданные с первой попытки в режимах «Тест» и «Ввод», сохраняются в памяти браузера и больше не повторяются, пока вы не нажмете «Сбросить прогресс».</li>
       </ul>
     </div>
-    <button type="button" class="btn-primary" style="width:100%; flex:none;" onclick="toggleHelp(false)">Понятно</button>
 
+    <button type="button" class="btn-primary" style="width:100%; flex:none;" onclick="toggleHelp(false)">Понятно</button>
   </div>
 </div>
+
 
 
 
@@ -1204,6 +1219,7 @@ function init() {
   selectedLessons.add(lessons.at(0));
   renderChips(lessons);
   resetSession();
+  setMode('flashcards', document.querySelector('.tab-btn'));
 }
 function toggleMute() { isMuted = !isMuted; saveStorage(); updateMuteBtn(); }
 function updateMuteBtn() {
@@ -1243,8 +1259,13 @@ function setMode(m, btn) {
   currentMode = m;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  const isCards = m === 'flashcards';
+  $("sizeBtn").disabled = isCards;
+  $("sizeBtn").style.opacity = isCards ? '0.45' : '1';
+  $("sizeBtn").style.cursor = isCards ? 'default' : 'pointer';
   resetSession();
 }
+
 
 const TOPICS = [
   ['понедельник','вторник','среда','четверг','пятница','суббота','воскресенье'],
@@ -1282,7 +1303,9 @@ function resetSession(onlyM = false, all = false) {
     const inL = dictionary.filter(w => selectedLessons.has(w.k));
     const un = all ? inL : inL.filter(w => !learnedWords.has(w.fi));
     const sh = un.sort(() => Math.random() - 0.5);
-    pool = roundLimit ? sh.slice(0, roundLimit) : sh;
+    const limit = currentMode === 'flashcards' ? 0 : roundLimit;
+    pool = limit ? sh.slice(0, limit) : sh;
+
   }
   totalInRound = pool.length; learnedCount = 0; errorCount = 0; sessionMistakes.clear(); isFlipped = false;
   renderCard();
@@ -1290,35 +1313,66 @@ function resetSession(onlyM = false, all = false) {
 function speak(text, lang = 'fi', manual = false) {
   if ((isMuted && !manual) || isSpeaking) return;
   const btn = $("speakBtn");
-  const reset = () => { isSpeaking = false; if (btn) { btn.disabled = false; btn.innerHTML = ICONS.speak; } };
+  const reset = () => {
+    isSpeaking = false;
+    if (btn) { btn.disabled = false; btn.innerHTML = ICONS.speak; }
+  };
+
   isSpeaking = true;
   if (btn) { btn.disabled = true; btn.innerHTML = ICONS.speak; }
-  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+
+  if (currentAudio) {
+    currentAudio.onended = null;
+    currentAudio.onerror = null;
+    currentAudio.pause();
+    currentAudio = null;
+  }
   if (window.speechSynthesis) window.speechSynthesis.cancel();
+
   const clean = text.replace(/\([^)]*\)/g, '').split('/').at(0).split(',').at(0).trim();
   const locale = lang === 'ru' ? 'ru-RU' : 'fi-FI';
+
   const fb = () => {
     if (!('speechSynthesis' in window)) { reset(); return; }
     const u = new SpeechSynthesisUtterance(clean);
     const vs = window.speechSynthesis.getVoices().filter(v => v.lang.toLowerCase().includes(lang));
     const best = vs.find(v => v.name.includes('Natural') || v.name.includes('Online')) || vs.at(0);
     if (best) u.voice = best;
-    u.lang = locale; u.rate = 0.9; u.onend = reset; u.onerror = reset;
+    u.lang = locale;
+    u.rate = 0.9;
+    u.onend = reset;
+    u.onerror = reset;
     window.speechSynthesis.speak(u);
   };
+
   if (location.protocol.startsWith('http')) {
-    const a = new Audio(`https://google.com{lang}&client=tw-ob&q=${encodeURIComponent(clean)}`);
-    currentAudio = a; a.onended = reset; a.onerror = fb; a.play().catch(fb);
-  } else fb();
+    const a = new Audio('https://google.com' + lang + '&client=tw-ob&q=' + encodeURIComponent(clean));
+    currentAudio = a;
+    a.onended = reset;
+    a.onerror = () => { currentAudio = null; fb(); };
+    a.play().catch(() => { currentAudio = null; fb(); });
+  } else {
+    fb();
+  }
+
   setTimeout(() => { if (isSpeaking) reset(); }, 3500);
 }
+
 function renderCard() {
   const inL = dictionary.filter(w => selectedLessons.has(w.k));
   const done = inL.filter(w => learnedWords.has(w.fi)).length;
   $("globalStatText").innerHTML = `Освоено в темах: <b>${done}</b> из <b>${inL.length}</b>`;
-  $("progressText").textContent = pool.length ? `Осталось: ${pool.length}` : 'Готово!';
-  $("errorsText").textContent = `Ошибок: ${errorCount}`;
-  $("learnedText").textContent = `В раунде: ${learnedCount} / ${totalInRound}`;
+   const statsBar = document.querySelector('.stats');
+  if (currentMode === 'flashcards') {
+    statsBar.style.display = 'none';
+  } else {
+    statsBar.style.display = 'flex';
+    $("progressText").textContent = pool.length ? `Осталось: ${pool.length}` : 'Готово!';
+    $("errorsText").textContent = `Ошибок: ${errorCount}`;
+    $("learnedText").textContent = `В раунде: ${learnedCount} / ${totalInRound}`;
+  }
+
+ 
   $("progressBar").style.width = totalInRound ? `${(learnedCount / totalInRound) * 100}%` : '100%';
   const area = $("gameArea");
   if (!pool.length) {
@@ -1339,7 +1393,8 @@ function renderCard() {
     area.innerHTML =
       `<div class="word-box"><div style="color:var(--success-text)">${ICONS.trophy}</div>` +
       `<div class="word-main" style="color:var(--success-text)">Hyvää työtä!</div>` +
-      `<div class="word-trans" style="border:none">Раунд завершен! Ошибок: <b>${errorCount}</b>${mHTML}</div></div>` +
+            `<div class="word-trans" style="border:none">Раунд завершен!${currentMode === 'flashcards' ? '' : ` Ошибок: <b>${errorCount}</b>`}${mHTML}</div></div>` +
+
       `<div class="buttons">${mArr.length ? `<button class="btn-wrong" onclick="resetSession(true)">Повторить ошибки</button>` : ''}` +
       `<button class="btn-primary" onclick="resetSession(false)">Следующие слова →</button></div>`;
     return;
@@ -1357,14 +1412,15 @@ function renderCard() {
   if (currentMode === 'flashcards') {
     const f = isFi ? w.fi : w.ru, b = isFi ? w.ru : w.fi;
     area.innerHTML = hdr +
-      `<div class="word-box fixed-card" onclick="isFlipped=!isFlipped;renderCard()" style="cursor:pointer">` +
-      `<div class="word-main">${f}</div>` +
-      (isFlipped ? `<div class="word-trans">${b}</div>` : `<div class="hint-tap">Нажми на карточку для перевода</div>`) +
-      `</div><div class="buttons">` +
+      '<div class="word-box fixed-card" onclick="isFlipped=!isFlipped;renderCard()" style="cursor:pointer">' +
+      '<div class="word-main">' + f + '</div>' +
+      (isFlipped ? '<div class="word-trans">' + b + '</div>' : '<div class="hint-tap">Нажми на карточку для перевода</div>') +
+      '</div><div class="buttons">' +
       (!isFlipped
-        ? `<button class="btn-primary" onclick="isFlipped=true;renderCard()">Показать перевод</button>`
-        : `<button class="btn-wrong" onclick="nextCard(false)">${ICONS.x} Учить еще</button><button class="btn-success" onclick="nextCard(true)">${ICONS.check} Знаю</button>`) +
-      `</div>`;
+        ? '<button class="btn-primary" onclick="isFlipped=true;renderCard()">Показать перевод</button>'
+        : '<button class="btn-primary" onclick="nextCard(false, true)">Дальше →</button>') +
+      '</div>';
+
   } else if (currentMode === 'quiz') {
     const opts = getSmartOptions(w);
     area.innerHTML = hdr + `<div class="word-box"><div class="word-main">${boxWord}</div></div>` +
