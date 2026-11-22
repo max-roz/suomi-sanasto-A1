@@ -89,13 +89,21 @@
 
   .stats { margin-top: 10px; padding-top: 8px; border-top: 1px solid #f0f2f5; font-size: 12px; color: #666; display: flex; justify-content: space-between; font-weight: 600; }
   .err-stat { color: var(--error-text); }
+    .footer-bar { margin-top: auto; padding-top: 10px; display: flex; justify-content: space-between; align-items: center; color: #888; font-size: 11.5px; }
+  .help-modal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55); display: none; align-items: center; justify-content: center; padding: 14px; z-index: 100; }
+  .help-modal.open { display: flex; }
+  .help-box { background: #fff; border-radius: 18px; padding: 18px 16px; max-width: 460px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.3); font-size: 13px; line-height: 1.45; color: #334155; }
+  .help-box h2 { margin: 0 0 10px; font-size: 17px; color: var(--primary-dark); }
+  .help-box ul { margin: 0 0 14px; padding-left: 18px; display: flex; flex-direction: column; gap: 7px; }
+  .help-box b { color: var(--primary-dark); }
+
 </style>
 
 </head>
 <body>
 <div class="card">
   <div class="section-head">
-    <span>Уроки:</span>
+    <span>Темы:</span>
     <div>
       <button class="link-btn" onclick="selectAll(true)">Все</button> ·
       <button class="link-btn" onclick="selectAll(false)">Сброс</button>
@@ -121,7 +129,24 @@
     <span id="errorsText" class="err-stat"></span>
     <span id="learnedText"></span>
   </div>
-  <div class="footer-sub">Словарный тренажер · Suomen mestari 1</div>
+    <div class="footer-bar">
+    <span>Базовый словарь финского языка · A1</span>
+    <button type="button" class="link-btn" onclick="toggleHelp(true)">Справка</button>
+  </div>
+</div>
+
+<div class="help-modal" id="helpModal" onclick="if(event.target===this)toggleHelp(false)">
+  <div class="help-box">
+    <h2>Как работать с тренажером</h2>
+    <ul>
+      <li><b>Темы (1–9):</b> нажимайте на цифры, чтобы выбрать один или несколько разделов. В раунд попадают только еще не выученные слова.</li>
+      <li><b>Режимы:</b> <b>Карточки</b> — для знакомства со словами, <b>Тест</b> — выбор из 4 похожих вариантов, <b>Ввод</b> — тренировка правописания (подсказка откроет первую, последнюю букву и длину слова).</li>
+      <li><b>Управление:</b> <b>Fi ↔ Ru</b> меняет направление перевода, <b>Звук</b> включает/выключает автоозвучку (кнопка с облачком на карточке всегда озвучит слово вручную), <b>10 слов</b> задает количество слов в раунде.</li>
+      <li><b>Прогресс:</b> слова, отмеченные кнопкой «Знаю» или угаданные с первой попытки, сохраняются в памяти вашего браузера и больше не повторяются, пока вы не нажмете «Сбросить прогресс».</li>
+    </ul>
+    <button type="button" class="btn-primary" style="width:100%" onclick="toggleHelp(false)">Понятно</button>
+  </div>
+<div class="footer-sub">Словарный тренажер · Suomen mestari 1</div>
 </div>
 
 
@@ -1148,7 +1173,7 @@ function saveStorage() {
   } catch (e) {}
 }
 function clearProgress() {
-  if (!confirm('Сбросить прогресс выученных слов для выбранных уроков?')) return;
+  if (!confirm('Сбросить прогресс выученных слов для выбранных тем?')) return;
   dictionary.filter(w => selectedLessons.has(w.k)).forEach(w => learnedWords.delete(w.fi));
   saveStorage();
   resetSession();
@@ -1279,7 +1304,7 @@ function speak(text, lang = 'fi', manual = false) {
 function renderCard() {
   const inL = dictionary.filter(w => selectedLessons.has(w.k));
   const done = inL.filter(w => learnedWords.has(w.fi)).length;
-  $("globalStatText").innerHTML = `Освоено в уроках: <b>${done}</b> из <b>${inL.length}</b>`;
+  $("globalStatText").innerHTML = `Освоено в темах: <b>${done}</b> из <b>${inL.length}</b>`;
   $("progressText").textContent = pool.length ? `Осталось: ${pool.length}` : 'Готово!';
   $("errorsText").textContent = `Ошибок: ${errorCount}`;
   $("learnedText").textContent = `В раунде: ${learnedCount} / ${totalInRound}`;
@@ -1316,7 +1341,7 @@ function renderCard() {
   const umlautHTML = (!isFi && currentMode === 'typing')
     ? `<div class="umlauts"><button type="button" class="umlaut-btn" onclick="addChar('ä')">ä</button><button type="button" class="umlaut-btn" onclick="addChar('ö')">ö</button><button type="button" class="umlaut-btn" onclick="addChar('å')">å</button></div>`
     : '';
-  const hdr = `<div class="header-row"><span class="tag">Урок ${w.k}</span>${umlautHTML}${speakBtnHTML}</div>`;
+  const hdr = `<div class="header-row"><span class="tag">Тема ${w.k}</span>${umlautHTML}${speakBtnHTML}</div>`;
 
   if (currentMode === 'flashcards') {
     const f = isFi ? w.fi : w.ru, b = isFi ? w.ru : w.fi;
@@ -1413,6 +1438,9 @@ function checkTyping() {
     speak(w.fi, 'fi', false);
     $("typeBtns").innerHTML = '<button class="btn-wrong" onclick="nextCard(false)">Дальше →</button>';
   }
+}
+function toggleHelp(show) {
+  $("helpModal").classList.toggle("open", show);
 }
 
 init();
