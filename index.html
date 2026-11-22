@@ -1300,16 +1300,27 @@ function getCategory(item) {
 }
 function getSmartOptions(target) {
   const cat = getCategory(target);
-  const others = dictionary.filter(x => x.fi !== target.fi);
+  const normRu = s => s.toLowerCase().replace(/\([^)]*\)/g, '').split(/[,/]/).at(0).trim();
+  const targetRu = normRu(target.ru);
+
+  const others = dictionary.filter(x => x.fi !== target.fi && normRu(x.ru) !== targetRu);
   const sameCat = others.filter(x => getCategory(x) === cat).sort(() => Math.random() - 0.5);
   const diffCat = others.filter(x => getCategory(x) !== cat).sort(() => Math.random() - 0.5);
-  const picked = [...sameCat.slice(0, 1), ...diffCat.slice(0, 2)];
-  while (picked.length < 3 && others.length > picked.length) {
-    const next = others.find(o => !picked.includes(o));
-    if (next) picked.push(next); else break;
+
+  const picked = [];
+  const usedRu = new Set([targetRu]);
+
+  for (const item of [...sameCat.slice(0, 1), ...diffCat, ...sameCat.slice(1)]) {
+    const r = normRu(item.ru);
+    if (!usedRu.has(r)) {
+      picked.push(item);
+      usedRu.add(r);
+      if (picked.length === 3) break;
+    }
   }
   return [target, ...picked].sort(() => Math.random() - 0.5);
 }
+
 function resetSession(onlyM = false, all = false) {
   if (onlyM && sessionMistakes.size > 0) {
     pool = [...sessionMistakes.values()].sort(() => Math.random() - 0.5);
@@ -1428,7 +1439,7 @@ function renderCard() {
     : '';
   const hdr = `<div class="header-row"><span class="tag">Тема ${w.k}</span>${umlautHTML}${speakBtnHTML}</div>`;
 
-    if (currentMode === 'flashcards') {
+  if (currentMode === 'flashcards') {
     const f = isFi ? w.fi : w.ru, b = isFi ? w.ru : w.fi;
     area.innerHTML = hdr +
       '<div class="word-box fixed-card">' +
@@ -1439,6 +1450,8 @@ function renderCard() {
         ? '<button class="btn-primary" onclick="isFlipped=true;renderCard()">Показать перевод</button>'
         : '<button class="btn-primary" onclick="nextCard(false, true)">Следующее слово</button>') +
       '</div>';
+    if (!isFlipped) speak(boxWord, boxLang, false);
+
 
 
 
