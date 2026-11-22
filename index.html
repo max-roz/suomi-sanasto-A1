@@ -1446,18 +1446,21 @@ function renderCard() {
     const opts = getSmartOptions(w);
     area.innerHTML = hdr + `<div class="word-box"><div class="word-main">${boxWord}</div></div>` +
       `<div class="options-grid">` + opts.map(o => `<button class="opt-btn" onclick="checkQuiz(this, ${o.fi === w.fi})">${isFi ? o.ru : o.fi}</button>`).join('') + `</div>`;
-  } else if (currentMode === 'typing') {
+    } else if (currentMode === 'typing') {
     const ph = isFi ? 'Напишите по-русски...' : 'Напишите по-фински...';
     area.innerHTML = hdr +
-      `<div class="word-box"><div class="word-main">${boxWord}</div></div>` +
-      `<input type="text" id="typeInput" name="q_field_${Date.now()}" class="answer-input" placeholder="${ph}" ` +
-      `autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="text" ` +
-      `onkeydown="if(event.key==='Enter')checkTyping()">` +
-      `<div id="typeFeedback"></div><div class="buttons" id="typeBtns">` +
-      `<button class="btn-secondary" onclick="showAns()">Подсказка</button>` +
-      `<button class="btn-primary" onclick="checkTyping()">Проверить</button></div>`;
+      '<div class="word-box"><div class="word-main">' + boxWord + '</div></div>' +
+      '<input type="text" id="typeInput" name="q_field_' + Date.now() + '" class="answer-input" placeholder="' + ph + '" ' +
+      'autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="text" ' +
+      'onfocus="if($(\'typeFeedback\')&&!$(\'typeFeedback\').querySelector(\'.wrong\'))$(\'typeFeedback\').innerHTML=\'\'" ' +
+      'oninput="if($(\'typeFeedback\')&&!$(\'typeFeedback\').querySelector(\'.wrong\'))$(\'typeFeedback\').innerHTML=\'\'" ' +
+      'onkeydown="if(event.key===\'Enter\')checkTyping()">' +
+      '<div id="typeFeedback"></div><div class="buttons" id="typeBtns">' +
+      '<button class="btn-secondary" onclick="showAns()">Подсказка</button>' +
+      '<button class="btn-primary" onclick="checkTyping()">Проверить</button></div>';
     setTimeout(() => $("typeInput")?.focus(), 50);
   }
+
 }
 function nextCard(k) {
   const c = pool.shift();
