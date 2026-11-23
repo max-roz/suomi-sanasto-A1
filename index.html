@@ -115,6 +115,11 @@
   .help-body { overflow-y: auto; padding-right: 4px; margin-bottom: 10px; }
   .help-box ul { margin: 0; padding-left: 16px; display: flex; flex-direction: column; gap: 6px; }
   .help-box b { color: var(--primary-dark); }
+  @media (orientation: landscape) and (max-height: 550px) {
+    .wrap { max-width: 100%; flex-direction: row; align-items: stretch; }
+    .panel-top { width: 46%; overflow-y: auto; }
+    .panel-main { width: 54%; overflow-y: auto; }
+  }
 
 
 </style>
