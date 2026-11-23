@@ -1567,13 +1567,13 @@ function checkQuiz(btn, ok) {
 
   if (ok) {
     btn.classList.add('correct');
-    btns.innerHTML = '<button class="btn-success" onclick="nextCard(true)">Дальше →</button>';
+    btns.innerHTML = '<button class="btn-success" onclick="nextCard(true)">Дальше</button>';
   } else {
     btn.classList.add('wrong');
     document.querySelectorAll('.opt-btn').forEach(b => {
       if (b.textContent === exp) b.classList.add('correct');
     });
-    btns.innerHTML = '<button class="btn-wrong" onclick="nextCard(false)">Дальше →</button>';
+    btns.innerHTML = '<button class="btn-wrong" onclick="nextCard(false)">Дальше</button>';
   }
   btns.style.display = 'flex';
 }
@@ -1633,5 +1633,6 @@ init();
 </script>
 </body>
 </html>
+
 
 
