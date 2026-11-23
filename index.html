@@ -115,18 +115,11 @@
   .help-body { overflow-y: auto; padding-right: 4px; margin-bottom: 10px; }
   .help-box ul { margin: 0; padding-left: 16px; display: flex; flex-direction: column; gap: 6px; }
   .help-box b { color: var(--primary-dark); }
-   @media (orientation: landscape) and (max-height: 550px) {
+  @media (orientation: landscape) and (max-height: 550px) {
     .wrap { max-width: 100%; flex-direction: row; align-items: stretch; }
     .panel-top { width: 46%; overflow-y: auto; }
     .panel-main { width: 54%; overflow-y: auto; }
-    body.kb-open .panel-top { display: none; }
-    body.kb-open .panel-main { width: 100%; padding: 8px 12px; }
-    body.kb-open .word-box { padding: 7px 10px; min-height: 38px; margin-bottom: 5px; }
-    body.kb-open .header-row { margin-bottom: 4px; }
-    body.kb-open .buttons { margin-top: 5px; }
-    body.kb-open .footer-bar { display: none; }
   }
-
 
 
 </style>
@@ -1460,14 +1453,11 @@ function speak(text, lang = 'fi', manual = false) {
 
 
 function clearHint() {
-  document.body.classList.add('kb-open');
   const fb = $("typeFeedback");
   if (fb && !fb.querySelector('.wrong')) fb.innerHTML = '';
 }
 
-
 function renderCard() {
-document.body.classList.remove('kb-open');
   const inL = dictionary.filter(w => selectedLessons.has(w.k));
   const done = inL.filter(w => learnedWords.has(w.fi)).length;
   $("globalStatText").innerHTML = `Освоено в темах: <b>${done}</b> из <b>${inL.length}</b>`;
@@ -1608,7 +1598,6 @@ function showAns() {
 }
 
 function checkTyping() {
- document.body.classList.remove('kb-open');
   const val = $("typeInput").value.trim().toLowerCase().replace(/[!?.]/g, '');
   const w = pool.at(0), isFi = direction === 'fi-ru';
   let ok = false, rightText = w.fi;
