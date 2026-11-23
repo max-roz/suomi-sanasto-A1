@@ -1369,8 +1369,7 @@ function resetSession(onlyM = false, all = false) {
 let iosAudioUnlocked = false;
 document.addEventListener('touchstart', () => {
   if (!iosAudioUnlocked && 'speechSynthesis' in window) {
-    const u = new SpeechSynthesisUtterance('');
-    window.speechSynthesis.speak(u);
+    window.speechSynthesis.getVoices();
     iosAudioUnlocked = true;
   }
 }, { once: true });
@@ -1392,13 +1391,18 @@ function speak(text, lang = 'fi', manual = false) {
   isSpeaking = true;
   if (btn) { btn.disabled = true; btn.innerHTML = ICONS.speak; }
 
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
   if (currentAudio) {
     currentAudio.onended = null;
     currentAudio.onerror = null;
     currentAudio.pause();
     currentAudio = null;
   }
-  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  if (!isIOS && 'speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
 
   const clean = text.replace(/\([^)]*\)/g, '').split('/').at(0).split(',').at(0).trim();
   const locale = lang === 'ru' ? 'ru-RU' : 'fi-FI';
@@ -1409,20 +1413,24 @@ function speak(text, lang = 'fi', manual = false) {
     currentAudio = null;
     if (!('speechSynthesis' in window)) { reset(); return; }
 
+    window.speechSynthesis.resume();
     const u = new SpeechSynthesisUtterance(clean);
     const voices = window.speechSynthesis.getVoices();
     const langVoices = voices.filter(v => v.lang.toLowerCase().startsWith(lang));
     const best = langVoices.find(v => /natural|online|satu|milena|enhanced|premium/i.test(v.name)) || langVoices.at(0);
-    if (best) u.voice = best;
 
-    u.lang = locale;
+    if (best) {
+      u.voice = best;
+      u.lang = best.lang;
+    } else {
+      u.lang = locale;
+    }
+
     u.rate = 0.92;
     u.onend = reset;
     u.onerror = reset;
     window.speechSynthesis.speak(u);
   };
-
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
   if (!isIOS && location.protocol.startsWith('http')) {
     const ttsUrl = 'https://google.com' + lang + '&client=tw-ob&q=' + encodeURIComponent(clean);
