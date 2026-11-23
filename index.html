@@ -7,63 +7,77 @@
 <meta name="theme-color" content="#1e3c72">
 <title>Suomen sanasto A1</title>
 <style>
-  :root {
+     :root {
     --primary: #2a5298; --primary-dark: #1e3c72; --primary-light: #e8eef7;
+    --bg-grad-start: #1e3c72; --bg-grad-end: #2a5298;
+    --panel-bg: #ffffff; --surface-bg: #f7f9fc; --surface-alt: #f0f4fa; --surface-prog: #f4f7fc;
+    --border-color: #eef2f7; --border-input: #d0dbe8; --border-tab: #dbe5f4;
+    --text-main: #222222; --text-muted: #666666; --text-subtle: #888888; --text-body: #334155;
+    --tag-bg: #e3f0ff; --tag-text: #1e5aa8;
     --success-bg: #e6f7ec; --success-text: #1a7f3c; --success-border: #7ed3a0;
     --error-bg: #fdecec; --error-text: #b32d2d; --error-border: #f5a3a3;
     --btn-h: 42px;
   }
+  body.dark {
+    --primary: #4c82f7; --primary-dark: #93c5fd; --primary-light: #1e293b;
+    --bg-grad-start: #090d16; --bg-grad-end: #111827;
+    --panel-bg: #161f30; --surface-bg: #1e293b; --surface-alt: #263349; --surface-prog: #1e293b;
+    --border-color: #2e3c54; --border-input: #334155; --border-tab: #334155;
+    --text-main: #f1f5f9; --text-muted: #94a3b8; --text-subtle: #64748b; --text-body: #cbd5e1;
+    --tag-bg: #1e3a5f; --tag-text: #7dd3fc;
+    --success-bg: #112e21; --success-text: #4ade80; --success-border: #166534;
+    --error-bg: #331619; --error-text: #f87171; --error-border: #7f1d1d;
+  }
+
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { height: 100dvh; margin: 0; padding: 0; overflow: hidden; }
   body {
     font-family: -apple-system, 'Segoe UI', Roboto, system-ui, sans-serif;
-    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
-    padding: 10px; display: flex; flex-direction: column; align-items: center; color: #222;
+    background: linear-gradient(135deg, var(--bg-grad-start) 0%, var(--bg-grad-end) 100%);
+    padding: 6px; display: flex; flex-direction: column; align-items: center; color: var(--text-main);
   }
-  .card {
-    background: #fff; border-radius: 20px; box-shadow: 0 12px 40px rgba(0,0,0,0.25);
-    padding: 14px 14px 12px; max-width: 540px; width: 100%; height: 100%;
-    display: flex; flex-direction: column; overflow-y: auto;
-  }
-  .footer-sub { color: #888; font-size: 11.5px; text-align: center; margin-top: auto; padding-top: 10px; }
+  .wrap { max-width: 540px; width: 100%; height: 100%; display: flex; flex-direction: column; gap: 5px; }
+  .panel { background: var(--panel-bg); border-radius: 18px; box-shadow: 0 10px 32px rgba(0,0,0,0.22); padding: 12px 14px; width: 100%; }
+  .panel-top { flex-shrink: 0; padding-bottom: 10px; }
+  .panel-main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+
   .icon { width: 15px; height: 15px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
   .icon-md { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
   .icon-lg { width: 30px; height: 30px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 4px; }
 
-  .section-head { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; color: #666; text-transform: uppercase; margin-bottom: 6px; }
+  .section-head { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; }
   .link-btn { background: none; border: none; color: var(--primary); font-size: 11.5px; font-weight: 600; cursor: pointer; text-decoration: underline; padding: 0; height: auto; }
 
   .lessons-grid { display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px; margin-bottom: 8px; }
-  .chip { height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 9px; font-size: 13px; font-weight: 700; background: #f0f4fa; color: #555; cursor: pointer; user-select: none; }
+  .chip { height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 9px; font-size: 13px; font-weight: 700; background: var(--surface-alt); color: var(--text-muted); cursor: pointer; user-select: none; }
   .chip.active { background: var(--primary); color: #fff; }
 
-  .global-progress { display: flex; justify-content: space-between; align-items: center; background: #f4f7fc; padding: 6px 10px; border-radius: 9px; font-size: 12px; color: #444; margin-bottom: 8px; }
+  .global-progress { display: flex; justify-content: space-between; align-items: center; background: var(--surface-prog); padding: 6px 10px; border-radius: 9px; font-size: 12px; color: var(--text-body); margin-bottom: 8px; }
 
-  .controls-stack { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+  .controls-stack { display: flex; flex-direction: column; gap: 6px; margin-bottom: 0; }
   .modes-row, .settings-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
   .tab-btn, .mini-btn { height: var(--btn-h); border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 0 4px; }
-  .tab-btn { border: 1.5px solid #dbe5f4; background: #f0f4fa; color: var(--primary); }
+  .tab-btn { border: 1.5px solid var(--border-tab); background: var(--surface-alt); color: var(--primary); }
   .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-  .mini-btn { border: 1.5px solid var(--primary); background: #fff; color: var(--primary); }
-  .mini-btn.muted { border-color: #cbd5e1; color: #888; background: #f8fafc; }
+  .mini-btn { border: 1.5px solid var(--primary); background: var(--panel-bg); color: var(--primary); }
+  .mini-btn.muted { border-color: var(--border-input); color: var(--text-subtle); background: var(--surface-bg); }
 
-  .progress { height: 5px; background: var(--primary-light); border-radius: 4px; overflow: hidden; margin-bottom: 10px; flex-shrink: 0; }
+  .progress { display: none; height: 5px; background: var(--primary-light); border-radius: 4px; overflow: hidden; margin-bottom: 6px; flex-shrink: 0; }
   .progress-bar { height: 100%; background: linear-gradient(90deg, var(--primary), #4a7fd4); width: 0%; transition: width 0.35s ease; }
 
-  .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; min-height: 36px; gap: 6px; }
-  .tag { font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 5px 10px; border-radius: 20px; background: #e3f0ff; color: #1e5aa8; white-space: nowrap; }
-  .btn-speak { height: 34px; width: 40px; display: inline-flex; align-items: center; justify-content: center; background: #fff; border: 1.5px solid var(--primary); color: var(--primary); padding: 0; border-radius: 9px; cursor: pointer; }
+  .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; min-height: 30px; gap: 6px; }
+  .tag { font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 5px 10px; border-radius: 20px; background: var(--tag-bg); color: var(--tag-text); white-space: nowrap; }
+  .btn-speak { height: 34px; width: 40px; display: inline-flex; align-items: center; justify-content: center; background: var(--panel-bg); border: 1.5px solid var(--primary); color: var(--primary); padding: 0; border-radius: 9px; cursor: pointer; }
   .btn-speak:disabled { opacity: 0.55; cursor: default; }
 
   .umlauts { display: flex; gap: 6px; }
   .umlaut-btn { height: 34px; width: 38px; font-size: 15px; font-weight: 700; background: var(--primary-light); color: var(--primary-dark); border-radius: 9px; display: inline-flex; align-items: center; justify-content: center; }
 
-  .word-box { text-align: center; padding: 22px 10px 16px; background: #f7f9fc; border-radius: 14px; border: 1px solid #eef2f7; margin-bottom: 10px; display: flex; flex-direction: column; justify-content: flex-start; min-height: 74px; }
+  .word-box { text-align: center; padding: 11px 10px; background: var(--surface-bg); border-radius: 14px; border: 1px solid var(--border-color); margin-bottom: 7px; display: flex; flex-direction: column; justify-content: flex-start; min-height: 48px; }
   .word-box.fixed-card { height: 100px; }
   .word-box.fixed-card .word-main { min-height: 30px; }
   .word-main { font-size: 21px; font-weight: 700; color: var(--primary-dark); margin: 0; line-height: 1.3; }
-  .word-trans { font-size: 18px; font-weight: 500; color: #222; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #d0dbe8; line-height: 1.3; }
-  .hint-tap { font-size: 12px; color: #888; margin-top: 10px; }
+  .word-trans { font-size: 18px; font-weight: 500; color: var(--text-main); margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border-input); line-height: 1.3; }
 
   button { font-family: inherit; border: none; cursor: pointer; }
   .buttons { display: flex; gap: 8px; margin-top: 8px; }
@@ -74,47 +88,34 @@
   .btn-secondary { background: var(--primary-light); color: var(--primary); }
 
   .options-grid { display: flex; flex-direction: column; gap: 6px; }
-  .opt-btn { min-height: var(--btn-h); width: 100%; padding: 8px 14px; font-size: 13.5px; font-weight: 600; text-align: left; background: #fff; border: 2px solid #d0dbe8; color: #222; border-radius: 11px; }
+  .opt-btn { min-height: var(--btn-h); width: 100%; padding: 8px 14px; font-size: 13.5px; font-weight: 600; text-align: left; background: var(--panel-bg); border: 2px solid var(--border-input); color: var(--text-main); border-radius: 11px; }
   .opt-btn.correct { background: var(--success-bg); color: var(--success-text); border-color: var(--success-border); }
   .opt-btn.wrong { background: var(--error-bg); color: var(--error-text); border-color: var(--error-border); }
 
-  .answer-input { height: var(--btn-h); width: 100%; padding: 0 12px; font-size: 17px; border: 2px solid #d0dbe8; border-radius: 11px; outline: none; text-align: center; }
+  .answer-input { height: 36px; width: 100%; padding: 0 12px; font-size: 16px; border: 2px solid var(--border-input); background: var(--panel-bg); color: var(--text-main); border-radius: 11px; outline: none; text-align: center; }
   .feedback-box { margin-top: 8px; padding: 8px 12px; border-radius: 10px; font-size: 13px; font-weight: 600; text-align: center; }
   .feedback-box.correct { background: var(--success-bg); color: var(--success-text); border: 1.5px solid var(--success-border); }
   .feedback-box.wrong { background: var(--error-bg); color: var(--error-text); border: 1.5px solid var(--error-border); }
   .fb-row { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
 
-  .mistakes-list { text-align: left; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #d0dbe8; font-size: 12.5px; }
-  .mistakes-list div { padding: 2px 0; color: #444; }
+  .mistakes-list { text-align: left; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border-input); font-size: 12.5px; }
+  .mistakes-list div { padding: 2px 0; color: var(--text-body); }
   .mistakes-list b { color: var(--error-text); }
 
-  .stats { margin-top: 10px; padding-top: 8px; border-top: 1px solid #f0f2f5; font-size: 12px; color: #666; display: flex; justify-content: space-between; font-weight: 600; }
+  .stats { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border-color); font-size: 12px; color: var(--text-muted); display: flex; justify-content: space-between; font-weight: 600; }
   .err-stat { color: var(--error-text); }
-    .footer-bar { margin-top: auto; padding-top: 10px; display: flex; justify-content: space-between; align-items: center; color: #888; font-size: 11.5px; }
-    .help-modal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); display: none; align-items: center; justify-content: center; padding: 12px; z-index: 999; }
+  .footer-bar { margin-top: auto; padding-top: 10px; display: flex; justify-content: space-between; align-items: center; color: var(--text-subtle); font-size: 11.5px; }
+
+  .help-modal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); display: none; align-items: center; justify-content: center; padding: 12px; z-index: 999; }
   .help-modal.open { display: flex; }
-  .help-box { background: #fff; border-radius: 18px; padding: 14px 14px 12px; width: 100%; max-width: 440px; max-height: 88dvh; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.3); font-size: 12.5px; line-height: 1.4; color: #334155; }
+  .help-box { background: var(--panel-bg); border-radius: 18px; padding: 14px 14px 12px; width: 100%; max-width: 440px; max-height: 88dvh; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.3); font-size: 12.5px; line-height: 1.4; color: var(--text-body); }
   .help-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
   .help-head h2 { margin: 0; font-size: 16px; color: var(--primary-dark); }
-  .help-close { background: #f0f4fa; color: var(--primary); width: 30px; height: 30px; border-radius: 8px; font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .help-close { background: var(--surface-alt); color: var(--primary); width: 30px; height: 30px; border-radius: 8px; font-size: 18px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
   .help-body { overflow-y: auto; padding-right: 4px; margin-bottom: 10px; }
   .help-box ul { margin: 0; padding-left: 16px; display: flex; flex-direction: column; gap: 6px; }
   .help-box b { color: var(--primary-dark); }
 
-  .controls-stack { margin-bottom: 6px; }
-  .progress { margin-bottom: 6px; }
-  .header-row { margin-bottom: 6px; min-height: 30px; }
-  .word-box { padding: 11px 10px; min-height: 48px; margin-bottom: 7px; }
-  .answer-input { height: 36px; font-size: 16px; }
-
-    body { padding: 6px; }
-  .wrap { max-width: 540px; width: 100%; height: 100%; display: flex; flex-direction: column; gap: 5px; }
-
-  .panel { background: #fff; border-radius: 18px; box-shadow: 0 10px 32px rgba(0,0,0,0.22); padding: 12px 14px; width: 100%; }
-  .panel-top { flex-shrink: 0; padding-bottom: 10px; }
-  .panel-main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
-  .controls-stack { margin-bottom: 0; }
-  .progress { display: none; }
 
 </style>
 
@@ -152,10 +153,15 @@
       <span id="errorsText" class="err-stat"></span>
       <span id="learnedText"></span>
     </div>
-    <div class="footer-bar">
+        <div class="footer-bar">
       <span>Базовый словарь финского языка · A1</span>
-      <button type="button" class="link-btn" onclick="toggleHelp(true)">Справка</button>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button type="button" class="link-btn" id="themeBtn" onclick="toggleTheme()">Тёмная тема</button>
+        <span>·</span>
+        <button type="button" class="link-btn" onclick="toggleHelp(true)">Справка</button>
+      </div>
     </div>
+
   </div>
 </div>
 
@@ -1167,190 +1173,7 @@ const dictionary = [
   { k: 9, fi: "ruokalista", ru: "меню" },
   { k: 9, fi: "alkuruoka", ru: "закуска, аппетайзер" },
   { k: 9, fi: "pääruoka", ru: "основное блюдо" },
-  { k: 9, fi: "juomaraha", ru: "чаевые" },
-    // ДОПОЛНЕНИЯ: ТЕМА 1
-  { k: 1, fi: "Huomenta!", ru: "Доброе утро!" },
-  { k: 1, fi: "Päivää!", ru: "Добрый день!" },
-  { k: 1, fi: "Iltaa!", ru: "Добрый вечер!" },
-  { k: 1, fi: "Moikka! / Heippa!", ru: "Пока!" },
-  { k: 1, fi: "Kyllä.", ru: "Да. (Конечно.)" },
-  { k: 1, fi: "Kippis! / Skool!", ru: "Ваше здоровье! / Будем здоровы!" },
-  { k: 1, fi: "Kiitos, oli hyvää.", ru: "Спасибо, было вкусно." },
-  { k: 1, fi: "Mikä päivä tänään on?", ru: "Какой сегодня день?" },
-  { k: 1, fi: "Hauskaa viikonloppua!", ru: "Приятных выходных!" },
-  { k: 1, fi: "toissapäivänä", ru: "позавчера" },
-  { k: 1, fi: "ylihuomenna", ru: "послезавтра" },
-  { k: 1, fi: "numero", ru: "числительное" },
-  { k: 1, fi: "yksitoista", ru: "одиннадцать" },
-  { k: 1, fi: "kaksitoista", ru: "двенадцать" },
-  { k: 1, fi: "kolmetoista", ru: "тринадцать" },
-  { k: 1, fi: "neljätoista", ru: "четырнадцать" },
-  { k: 1, fi: "viisitoista", ru: "пятнадцать" },
-  { k: 1, fi: "kuusitoista", ru: "шестнадцать" },
-  { k: 1, fi: "seitsemäntoista", ru: "семнадцать" },
-  { k: 1, fi: "kahdeksantoista", ru: "восемнадцать" },
-  { k: 1, fi: "yhdeksäntoista", ru: "девятнадцать" },
-  { k: 1, fi: "kaksikymmentä", ru: "двадцать" },
-  { k: 1, fi: "kaksikymmentäyksi", ru: "двадцать один" },
-  { k: 1, fi: "kaksikymmentäkaksi", ru: "двадцать два" },
-  { k: 1, fi: "kaksikymmentäkolme", ru: "двадцать три" },
-  { k: 1, fi: "kolmekymmentä", ru: "тридцать" },
-  { k: 1, fi: "neljäkymmentä", ru: "сорок" },
-  { k: 1, fi: "viisikymmentä", ru: "пятьдесят" },
-  { k: 1, fi: "kuusikymmentä", ru: "шестьдесят" },
-  { k: 1, fi: "seitsemänkymmentä", ru: "семьдесят" },
-  { k: 1, fi: "kahdeksankymmentä", ru: "восемьдесят" },
-  { k: 1, fi: "yhdeksänkymmentä", ru: "девяносто" },
-  { k: 1, fi: "sata", ru: "сто" },
-  { k: 1, fi: "satayksi", ru: "сто один" },
-  { k: 1, fi: "kaksisataa", ru: "двести" },
-  { k: 1, fi: "kolmesataa", ru: "триста" },
-  { k: 1, fi: "tuhat", ru: "тысяча" },
-  { k: 1, fi: "kaksituhatta", ru: "две тысячи" },
-  { k: 1, fi: "viisisataatuhatta", ru: "пятьсот тысяч" },
-  { k: 1, fi: "miljoona", ru: "миллион" },
-  { k: 1, fi: "kaksi miljoonaa", ru: "два миллиона" },
-  { k: 1, fi: "miljardi", ru: "миллиард" },
-  { k: 1, fi: "viisi miljardia", ru: "пять миллиардов" },
-  { k: 1, fi: "Kuinka vanha sinä olet?", ru: "Сколько тебе лет?" },
-
-  // ДОПОЛНЕНИЯ: ТЕМА 2
-  { k: 2, fi: "Etelä-Afrikka", ru: "Южная Африка, ЮАР" },
-  { k: 2, fi: "jätski", ru: "мороженое (разг.)" },
-  { k: 2, fi: "kiska", ru: "киоск (разг.)" },
-  { k: 2, fi: "Tuleeks muuta?", ru: "Что-нибудь еще?" },
-  { k: 2, fi: "Tuleeks nää samasta?", ru: "Оплата вместе?" },
-  { k: 2, fi: "Tarviitko kuittia?", ru: "Вам нужен чек?" },
-  { k: 2, fi: "mikä", ru: "какой, что (с глаголом olla)" },
-  { k: 2, fi: "mitä", ru: "какой, что (с другими глаголами)" },
-
-  // ДОПОЛНЕНИЯ: ТЕМА 3
-  { k: 3, fi: "Niin kuulemma!", ru: "Созвонимся!" },
-  { k: 3, fi: "Niin varmaan!", ru: "Если бы!" },
-  { k: 3, fi: "Terveisiä ...lle!", ru: "Передавай привет ...!" },
-  { k: 3, fi: "suuri", ru: "большой" },
-  { k: 3, fi: "maanantaisin", ru: "по понедельникам" },
-  { k: 3, fi: "keskiviikkoisin", ru: "по средам" },
-  { k: 3, fi: "torstaisin", ru: "по четвергам" },
-  { k: 3, fi: "Ohhoh!", ru: "Ого!" },
-  { k: 3, fi: "yhtä hyvin kuin", ru: "так же хорошо, как" },
-  { k: 3, fi: "opiskelija-asunto", ru: "студенческая квартира" },
-  { k: 3, fi: "Sataa kaatamalla.", ru: "Проливной дождь." },
-  { k: 3, fi: "On puolipilvistä.", ru: "Переменная облачность." },
-  { k: 3, fi: "On sateista.", ru: "Дождливо." },
-  { k: 3, fi: "Sataa räntää.", ru: "Идет мокрый снег." },
-  { k: 3, fi: "Millainen sää tänään on?", ru: "Какая сегодня погода?" },
-  { k: 3, fi: "Kuinka monta astetta ulkona on?", ru: "Сколько градусов на улице?" },
-  { k: 3, fi: "aikuisopisto", ru: "колледж для взрослых" },
-  { k: 3, fi: "kurssisihteeri", ru: "секретарь курса" },
-  { k: 3, fi: "Se ei käy.", ru: "Это не подойдет." },
-  { k: 3, fi: "olla tilaa", ru: "есть место" },
-  { k: 3, fi: "Sanotko uudelleen?", ru: "Не могли бы вы повторить?" },
-  { k: 3, fi: "postitoimipaikka", ru: "город (в почтовом адресе)" },
-  { k: 3, fi: "ilmoittautuminen", ru: "регистрация, зачисление" },
-  { k: 3, fi: "sähköpostitse", ru: "по электронной почте" },
-  { k: 3, fi: "henkilötunnus", ru: "личный идентификационный код" },
-  { k: 3, fi: "ensi", ru: "следующий, будущий" },
-  { k: 3, fi: "Voitko auttaa minua?", ru: "Не могли бы вы мне помочь?" },
-  { k: 3, fi: "Voitko puhua hitaammin?", ru: "Не могли бы вы говорить медленнее?" },
-  // ДОПОЛНЕНИЯ: ТЕМА 4
-  { k: 4, fi: "4-vuotias", ru: "четырехлетний" },
-  { k: 4, fi: "helsinkiläinen", ru: "житель Хельсинки" },
-  { k: 4, fi: "suloinen", ru: "милый, сладкий" },
-  { k: 4, fi: "Minkänäköinen hän on?", ru: "Как он выглядит?" },
-  { k: 4, fi: "Minkävärinen?", ru: "Какого цвета?" },
-  { k: 4, fi: "tummanpunainen", ru: "темно-красный" },
-  { k: 4, fi: "tummansininen", ru: "темно-синий" },
-  { k: 4, fi: "vaaleanpunainen", ru: "светло-красный" },
-  { k: 4, fi: "sukulaiset", ru: "родственники" },
-  { k: 4, fi: "mummi / mummo", ru: "бабушка" },
-  { k: 4, fi: "ukki / vaari", ru: "дедушка" },
-  { k: 4, fi: "yksinhuoltaja", ru: "единственный опекун" },
-  { k: 4, fi: "uusperhe", ru: "воссоединенная семья" },
-  { k: 4, fi: "farkkutakki", ru: "джинсовая куртка" },
-  { k: 4, fi: "rauhassa", ru: "спокойно" },
-  { k: 4, fi: "myöhemmin", ru: "позднее" },
-  { k: 4, fi: "Onko tätä mustana?", ru: "Это есть в черном цвете?" },
-  { k: 4, fi: "klubikortti", ru: "клубная карта" },
-  { k: 4, fi: "prosentti", ru: "процент" },
-  { k: 4, fi: "oma", ru: "свой, своя, свое" },
-  { k: 4, fi: "t-paita", ru: "футболка" },
-  { k: 4, fi: "uimahousut", ru: "плавки" },
-  { k: 4, fi: "rintaliivit", ru: "бюстгальтер" },
-  { k: 4, fi: "alushousut", ru: "трусы" },
-  { k: 4, fi: "aluspaita", ru: "майка" },
-  { k: 4, fi: "kalsarit", ru: "трусы" },
-  { k: 4, fi: "Mitä sinulla on päällä?", ru: "Что на тебе надето?" },
-  { k: 4, fi: "olla päässä", ru: "на голове" },
-
-  // ДОПОЛНЕНИЯ: ТЕМА 5
-  { k: 5, fi: "muroja", ru: "хлопья" },
-  { k: 5, fi: "yhdeksältä", ru: "в 9 часов" },
-  { k: 5, fi: "kahdelta", ru: "в 2 часа" },
-  { k: 5, fi: "futis", ru: "футбол" },
-  { k: 5, fi: "mennä uimaan", ru: "идти плавать" },
-  { k: 5, fi: "mennä syömään", ru: "пойти поесть" },
-  { k: 5, fi: "mennä pelaamaan", ru: "пойти играть" },
-  { k: 5, fi: "tapaamisen sopiminen", ru: "назначение встречи" },
-
-  // ДОПОЛНЕНИЯ: ТЕМА 6
-  { k: 6, fi: "ruokapöytä", ru: "обеденный стол" },
-  { k: 6, fi: "etupiha", ru: "двор дома" },
-  { k: 6, fi: "yhteydenotto", ru: "контакт, связь" },
-  { k: 6, fi: "näyttää hyvältä", ru: "хорошо выглядеть" },
-  { k: 6, fi: "hirveän kallis", ru: "ужасно дорогой" },
-  { k: 6, fi: "Niin on.", ru: "И правда." },
-  { k: 6, fi: "Mennään vaan!", ru: "Пойдем!" },
-  { k: 6, fi: "tapahtua", ru: "происходить" },
-  { k: 6, fi: "tuo", ru: "тот, та, то" },
-  { k: 6, fi: "nämä", ru: "эти" },
-  { k: 6, fi: "käydä", ru: "идти, ходить" },
-  { k: 6, fi: "missä päin", ru: "где" },
-  { k: 6, fi: "rauhaton", ru: "беспокойный" },
-  { k: 6, fi: "tv-taso", ru: "тумба для телевизора" },
-  { k: 6, fi: "työtuoli", ru: "рабочий стул" },
-  { k: 6, fi: "työpöytä", ru: "рабочий стол" },
-  { k: 6, fi: "wc-pönttö", ru: "унитаз" },
-  { k: 6, fi: "sohvapöytä", ru: "журнальный столик" },
-  { k: 6, fi: "asuminen", ru: "проживание" },
-  { k: 6, fi: "vuokra-asunto", ru: "арендованная квартира" },
-  { k: 6, fi: "omistusasunto", ru: "собственная квартира" },
-  { k: 6, fi: "keittokomero", ru: "мини-кухня" },
-  { k: 6, fi: "vaatehuone", ru: "гардеробная" },
-  { k: 6, fi: "alakerta", ru: "нижний этаж" },
-  { k: 6, fi: "yläkerta", ru: "верхний этаж" },
-  { k: 6, fi: "rappukäytävä", ru: "лестничная клетка" },
-  { k: 6, fi: "kellarikomero", ru: "подвальное помещение" },
-  { k: 6, fi: "vinttikomero", ru: "чердак" },
-  { k: 6, fi: "ulkoiluvälinevarasto", ru: "кладовая" },
-  { k: 6, fi: "pyörävarasto", ru: "кладовка для велосипедов" },
-  { k: 6, fi: "huoltoyhtiö", ru: "управляющая компания" },
-  { k: 6, fi: "huoltomies", ru: "смотритель" },
-  { k: 6, fi: "saunavuoro", ru: "время для посещения сауны" },
-
-  // ДОПОЛНЕНИЯ: ТЕМА 7
-  { k: 7, fi: "museokeskus", ru: "музейный центр" },
-  { k: 7, fi: "Hyvä idea!", ru: "Отличная идея!" },
-  { k: 7, fi: "Niin onkin!", ru: "Ведь правда!" },
-  { k: 7, fi: "mustamakkara", ru: "кровяная колбаса" },
-  { k: 7, fi: "tamperelainen", ru: "житель Тампере" },
-  { k: 7, fi: "puolukkahillo", ru: "брусничное варенье" },
-  { k: 7, fi: "Sehän on kiva!", ru: "Вот здорово!" },
-  { k: 7, fi: "parkkihalli", ru: "крытая автостоянка" },
-  { k: 7, fi: "yhden hengen huone", ru: "одноместный номер" },
-  { k: 7, fi: "kahden hengen huone", ru: "двухместный номер" },
-  { k: 7, fi: "kuulua hintaan", ru: "входить в цену" },
-
-  // ДОПОЛНЕНИЯ: ТЕМА 8
-  { k: 8, fi: "sitruunakakku", ru: "лимонный кекс" },
-  { k: 8, fi: "sillä aikaa", ru: "в это время" },
-  { k: 8, fi: "makaronilaatikko", ru: "запеканка с пастой" },
-  { k: 8, fi: "kauramaito", ru: "овсяное молоко" },
-  { k: 8, fi: "karjalanpiirakka", ru: "карельский пирожок" },
-  { k: 8, fi: "kadunkulma", ru: "угол улицы" },
-  { k: 8, fi: "oikealla puolella", ru: "справа" },
-  { k: 8, fi: "vasemmalla puolella", ru: "слева" }
-
+  { k: 9, fi: "juomaraha", ru: "чаевые" }
 
 
 
@@ -1364,7 +1187,9 @@ const dictionary = [
 
 <script>
 const $ = id => document.getElementById(id);
-const STORAGE_KEY = 'sm1_learned_v1', MUTE_KEY = 'sm1_muted_v1';
+const STORAGE_KEY = 'sm1_learned_v1', MUTE_KEY = 'sm1_muted_v1', THEME_KEY = 'sm1_theme_v1';
+let isDark = false;
+
 const svg = (p, c = 'icon') => `<svg class="${c}" viewBox="0 0 24 24">${p}</svg>`;
 const ICONS = {
   cards: svg('<rect x="3" y="5" width="14" height="14" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v12"/>'),
@@ -1383,18 +1208,38 @@ let currentMode = 'flashcards', direction = 'fi-ru', roundLimit = 10;
 let pool = [], totalInRound = 0, learnedCount = 0, errorCount = 0, isFlipped = false;
 let sessionMistakes = new Map(), isSpeaking = false, currentAudio = null;
 
+
+
 function loadStorage() {
   try {
     learnedWords = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'));
     isMuted = localStorage.getItem(MUTE_KEY) === '1';
+    isDark = localStorage.getItem(THEME_KEY) === 'dark';
   } catch (e) {}
 }
+
 function saveStorage() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify([...learnedWords]));
     localStorage.setItem(MUTE_KEY, isMuted ? '1' : '0');
+    localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
   } catch (e) {}
 }
+
+function applyTheme() {
+  document.body.classList.toggle('dark', isDark);
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  if (metaTheme) metaTheme.setAttribute('content', isDark ? '#090d16' : '#1e3c72');
+  const btn = $("themeBtn");
+  if (btn) btn.textContent = isDark ? 'Светлая тема' : 'Тёмная тема';
+}
+
+function toggleTheme() {
+  isDark = !isDark;
+  saveStorage();
+  applyTheme();
+}
+
 function clearProgress() {
   if (!confirm('Сбросить прогресс выученных слов для выбранных тем?')) return;
   dictionary.filter(w => selectedLessons.has(w.k)).forEach(w => learnedWords.delete(w.fi));
@@ -1416,6 +1261,9 @@ function init() {
   selectedLessons.add(lessons.at(0));
   renderChips(lessons);
   resetSession();
+    loadStorage();
+  applyTheme();
+
   setMode('flashcards', document.querySelector('.tab-btn'));
 }
 function toggleMute() { isMuted = !isMuted; saveStorage(); updateMuteBtn(); }
@@ -1721,16 +1569,14 @@ function checkTyping() {
   const w = pool.at(0), isFi = direction === 'fi-ru';
   let ok = false, rightText = w.fi;
 
-    if (isFi) {
+  if (isFi) {
     const cleanRu = w.ru.toLowerCase().replace(/\([^)]*\)/g, '');
     const variants = cleanRu.split(/[,/]/).map(s => s.replace(/[!?.]/g, '').trim()).filter(Boolean);
     ok = variants.includes(val);
     rightText = w.ru;
   } else {
-    const fiVariants = w.fi.toLowerCase().split('/').map(s => s.replace(/[!?.]/g, '').trim()).filter(Boolean);
-    ok = fiVariants.includes(val);
+    ok = val === w.fi.trim().toLowerCase().replace(/[!?.]/g, '');
   }
-
 
   if (ok) {
     $("typeFeedback").innerHTML =
