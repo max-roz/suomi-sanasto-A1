@@ -1366,6 +1366,19 @@ function resetSession(onlyM = false, all = false) {
   totalInRound = pool.length; learnedCount = 0; errorCount = 0; sessionMistakes.clear(); isFlipped = false;
   renderCard();
 }
+let iosAudioUnlocked = false;
+document.addEventListener('touchstart', () => {
+  if (!iosAudioUnlocked && 'speechSynthesis' in window) {
+    const u = new SpeechSynthesisUtterance('');
+    window.speechSynthesis.speak(u);
+    iosAudioUnlocked = true;
+  }
+}, { once: true });
+
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+}
+
 function speak(text, lang = 'fi', manual = false) {
   if ((isMuted && !manual) || isSpeaking) return;
   const btn = $("speakBtn");
@@ -1385,7 +1398,7 @@ function speak(text, lang = 'fi', manual = false) {
     currentAudio.pause();
     currentAudio = null;
   }
-  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
 
   const clean = text.replace(/\([^)]*\)/g, '').split('/').at(0).split(',').at(0).trim();
   const locale = lang === 'ru' ? 'ru-RU' : 'fi-FI';
@@ -1395,19 +1408,25 @@ function speak(text, lang = 'fi', manual = false) {
     fallbackCalled = true;
     currentAudio = null;
     if (!('speechSynthesis' in window)) { reset(); return; }
+
     const u = new SpeechSynthesisUtterance(clean);
-    const vs = window.speechSynthesis.getVoices().filter(v => v.lang.toLowerCase().includes(lang));
-    const best = vs.find(v => v.name.includes('Natural') || v.name.includes('Online')) || vs.at(0);
+    const voices = window.speechSynthesis.getVoices();
+    const langVoices = voices.filter(v => v.lang.toLowerCase().startsWith(lang));
+    const best = langVoices.find(v => /natural|online|satu|milena|enhanced|premium/i.test(v.name)) || langVoices.at(0);
     if (best) u.voice = best;
+
     u.lang = locale;
-    u.rate = 0.9;
+    u.rate = 0.92;
     u.onend = reset;
     u.onerror = reset;
     window.speechSynthesis.speak(u);
   };
 
-  if (location.protocol.startsWith('http')) {
-    const a = new Audio('https://google.com' + lang + '&client=tw-ob&q=' + encodeURIComponent(clean));
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+  if (!isIOS && location.protocol.startsWith('http')) {
+    const ttsUrl = 'https://google.com' + lang + '&client=tw-ob&q=' + encodeURIComponent(clean);
+    const a = new Audio(ttsUrl);
     currentAudio = a;
     a.onended = reset;
     a.onerror = runFallback;
@@ -1418,6 +1437,7 @@ function speak(text, lang = 'fi', manual = false) {
 
   setTimeout(() => { if (isSpeaking) reset(); }, 3500);
 }
+
 
 function clearHint() {
   const fb = $("typeFeedback");
