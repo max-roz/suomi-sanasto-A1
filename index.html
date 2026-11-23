@@ -1257,16 +1257,16 @@ const dictionary = [
   { k: 4, fi: "4-vuotias", ru: "четырехлетний" },
   { k: 4, fi: "helsinkiläinen", ru: "житель Хельсинки" },
   { k: 4, fi: "suloinen", ru: "милый, сладкий" },
-  { k: 4, fi: "Minkänäköinen hän on?", ru: "Как он/она выглядит?" },
+  { k: 4, fi: "Minkänäköinen hän on?", ru: "Как он выглядит?" },
   { k: 4, fi: "Minkävärinen?", ru: "Какого цвета?" },
   { k: 4, fi: "tummanpunainen", ru: "темно-красный" },
   { k: 4, fi: "tummansininen", ru: "темно-синий" },
-  { k: 4, fi: "vaaleanpunainen", ru: "розовый, светло-красный" },
+  { k: 4, fi: "vaaleanpunainen", ru: "светло-красный" },
   { k: 4, fi: "sukulaiset", ru: "родственники" },
   { k: 4, fi: "mummi / mummo", ru: "бабушка" },
   { k: 4, fi: "ukki / vaari", ru: "дедушка" },
   { k: 4, fi: "yksinhuoltaja", ru: "единственный опекун" },
-  { k: 4, fi: "uusperhe", ru: "новая семья, новый брак" },
+  { k: 4, fi: "uusperhe", ru: "воссоединенная семья" },
   { k: 4, fi: "farkkutakki", ru: "джинсовая куртка" },
   { k: 4, fi: "rauhassa", ru: "спокойно" },
   { k: 4, fi: "myöhemmin", ru: "позднее" },
@@ -1279,7 +1279,7 @@ const dictionary = [
   { k: 4, fi: "rintaliivit", ru: "бюстгальтер" },
   { k: 4, fi: "alushousut", ru: "трусы" },
   { k: 4, fi: "aluspaita", ru: "майка" },
-  { k: 4, fi: "kalsarit", ru: "трусы, кальсоны" },
+  { k: 4, fi: "kalsarit", ru: "трусы" },
   { k: 4, fi: "Mitä sinulla on päällä?", ru: "Что на тебе надето?" },
   { k: 4, fi: "olla päässä", ru: "на голове" },
 
@@ -1287,7 +1287,7 @@ const dictionary = [
   { k: 5, fi: "muroja", ru: "хлопья" },
   { k: 5, fi: "yhdeksältä", ru: "в 9 часов" },
   { k: 5, fi: "kahdelta", ru: "в 2 часа" },
-  { k: 5, fi: "futis", ru: "футбол (разг.)" },
+  { k: 5, fi: "futis", ru: "футбол" },
   { k: 5, fi: "mennä uimaan", ru: "идти плавать" },
   { k: 5, fi: "mennä syömään", ru: "пойти поесть" },
   { k: 5, fi: "mennä pelaamaan", ru: "пойти играть" },
@@ -1306,7 +1306,7 @@ const dictionary = [
   { k: 6, fi: "nämä", ru: "эти" },
   { k: 6, fi: "käydä", ru: "идти, ходить" },
   { k: 6, fi: "missä päin", ru: "где" },
-  { k: 6, fi: "rauhaton", ru: "беспокойный, тревожный" },
+  { k: 6, fi: "rauhaton", ru: "беспокойный" },
   { k: 6, fi: "tv-taso", ru: "тумба для телевизора" },
   { k: 6, fi: "työtuoli", ru: "рабочий стул" },
   { k: 6, fi: "työpöytä", ru: "рабочий стол" },
@@ -1322,7 +1322,7 @@ const dictionary = [
   { k: 6, fi: "rappukäytävä", ru: "лестничная клетка" },
   { k: 6, fi: "kellarikomero", ru: "подвальное помещение" },
   { k: 6, fi: "vinttikomero", ru: "чердак" },
-  { k: 6, fi: "ulkoiluvälinevarasto", ru: "кладовая для уличного снаряжения" },
+  { k: 6, fi: "ulkoiluvälinevarasto", ru: "кладовая" },
   { k: 6, fi: "pyörävarasto", ru: "кладовка для велосипедов" },
   { k: 6, fi: "huoltoyhtiö", ru: "управляющая компания" },
   { k: 6, fi: "huoltomies", ru: "смотритель" },
@@ -1332,7 +1332,7 @@ const dictionary = [
   { k: 7, fi: "museokeskus", ru: "музейный центр" },
   { k: 7, fi: "Hyvä idea!", ru: "Отличная идея!" },
   { k: 7, fi: "Niin onkin!", ru: "Ведь правда!" },
-  { k: 7, fi: "mustamakkara", ru: "кровяная колбаса (блюдо Тампере)" },
+  { k: 7, fi: "mustamakkara", ru: "кровяная колбаса" },
   { k: 7, fi: "tamperelainen", ru: "житель Тампере" },
   { k: 7, fi: "puolukkahillo", ru: "брусничное варенье" },
   { k: 7, fi: "Sehän on kiva!", ru: "Вот здорово!" },
@@ -1348,8 +1348,8 @@ const dictionary = [
   { k: 8, fi: "kauramaito", ru: "овсяное молоко" },
   { k: 8, fi: "karjalanpiirakka", ru: "карельский пирожок" },
   { k: 8, fi: "kadunkulma", ru: "угол улицы" },
-  { k: 8, fi: "oikealla puolella", ru: "по правую сторону, справа" },
-  { k: 8, fi: "vasemmalla puolella", ru: "по левую сторону, слева" }
+  { k: 8, fi: "oikealla puolella", ru: "справа" },
+  { k: 8, fi: "vasemmalla puolella", ru: "слева" }
 
 
 
@@ -1721,14 +1721,16 @@ function checkTyping() {
   const w = pool.at(0), isFi = direction === 'fi-ru';
   let ok = false, rightText = w.fi;
 
-  if (isFi) {
+    if (isFi) {
     const cleanRu = w.ru.toLowerCase().replace(/\([^)]*\)/g, '');
     const variants = cleanRu.split(/[,/]/).map(s => s.replace(/[!?.]/g, '').trim()).filter(Boolean);
     ok = variants.includes(val);
     rightText = w.ru;
   } else {
-    ok = val === w.fi.trim().toLowerCase().replace(/[!?.]/g, '');
+    const fiVariants = w.fi.toLowerCase().split('/').map(s => s.replace(/[!?.]/g, '').trim()).filter(Boolean);
+    ok = fiVariants.includes(val);
   }
+
 
   if (ok) {
     $("typeFeedback").innerHTML =
