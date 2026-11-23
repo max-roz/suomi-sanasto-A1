@@ -1615,12 +1615,13 @@ function checkTyping() {
     $("typeFeedback").innerHTML =
       '<div class="feedback-box correct"><span class="fb-row">' + ICONS.check + ' Верно! ' + rightText + '</span></div>';
     speak(w.fi, 'fi', false);
-    setTimeout(() => nextCard(true), 1000);
+    $("typeBtns").innerHTML = '<button class="btn-success" onclick="nextCard(true)">Дальше</button>';
+  
   } else {
     $("typeFeedback").innerHTML =
       '<div class="feedback-box wrong"><span class="fb-row">' + ICONS.x + ' Ошибка. Правильно: <b>' + rightText + '</b></span></div>';
     speak(w.fi, 'fi', false);
-    $("typeBtns").innerHTML = '<button class="btn-wrong" onclick="nextCard(false)">Дальше →</button>';
+    $("typeBtns").innerHTML = '<button class="btn-wrong" onclick="nextCard(false)">Дальше</button>';
   }
 }
 
@@ -1632,4 +1633,5 @@ init();
 </script>
 </body>
 </html>
+
 
