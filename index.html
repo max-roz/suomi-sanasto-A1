@@ -1598,7 +1598,12 @@ function showAns() {
 }
 
 function checkTyping() {
-  const val = $("typeInput").value.trim().toLowerCase().replace(/[!?.]/g, '');
+  const inp = $("typeInput");
+  if (!inp || inp.disabled) return;
+  const val = inp.value.trim().toLowerCase().replace(/[!?.]/g, '');
+  inp.blur();
+  inp.disabled = true;
+
   const w = pool.at(0), isFi = direction === 'fi-ru';
   let ok = false, rightText = w.fi;
 
@@ -1633,6 +1638,7 @@ init();
 </script>
 </body>
 </html>
+
 
 
 
