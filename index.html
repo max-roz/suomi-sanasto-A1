@@ -115,11 +115,27 @@
   .help-body { overflow-y: auto; padding-right: 4px; margin-bottom: 10px; }
   .help-box ul { margin: 0; padding-left: 16px; display: flex; flex-direction: column; gap: 6px; }
   .help-box b { color: var(--primary-dark); }
-  @media (orientation: landscape) and (max-height: 550px) {
-    .wrap { max-width: 100%; flex-direction: row; align-items: stretch; }
-    .panel-top { width: 46%; overflow-y: auto; }
-    .panel-main { width: 54%; overflow-y: auto; }
+   #gameArea { display: flex; flex-direction: column; flex: none; }
+  .stats, .footer-bar { flex-shrink: 0; }
+  @media (min-width: 640px) {
+    .wrap { max-width: 960px; flex-direction: row; align-items: stretch; }
+    .panel-top { width: 45%; overflow-y: auto; }
+    .panel-main { width: 55%; overflow-y: auto; padding: 10px 12px; }
+    .panel-main .header-row { margin-bottom: 4px; min-height: 28px; }
+    .panel-main .word-box { padding: 8px 10px; margin-bottom: 5px; }
+    .panel-main .word-box.fixed-card { height: 88px; }
+    .panel-main .word-main { font-size: 19px; }
+    .panel-main .word-trans { font-size: 16px; margin-top: 6px; padding-top: 6px; }
+    .panel-main .options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; }
+    .panel-main .opt-btn { min-height: 36px; padding: 6px 10px; font-size: 13px; text-align: center; }
+    .panel-main .answer-input { height: 34px; }
+    .panel-main .feedback-box { margin-top: 5px; padding: 6px 10px; font-size: 12.5px; }
+    .panel-main .buttons { margin-top: 6px; }
+    .panel-main .btn-primary, .panel-main .btn-success, .panel-main .btn-wrong, .panel-main .btn-secondary { height: 36px; }
+    .panel-main .stats { margin-top: 6px; padding-top: 5px; }
+    .panel-main .footer-bar { padding-top: 6px; }
   }
+
 
 
 </style>
@@ -1438,7 +1454,7 @@ function speak(text, lang = 'fi', manual = false) {
   };
 
   if (!isIOS && location.protocol.startsWith('http')) {
-    const base = 'https://google.com';
+    const base = 'https://' + '://google.com';
 const ttsUrl = base + '?ie=UTF-8&tl=' + lang + '&client=tw-ob&q=' + encodeURIComponent(clean);
 
     const a = new Audio(ttsUrl);
@@ -1640,6 +1656,7 @@ init();
 </script>
 </body>
 </html>
+
 
 
 
