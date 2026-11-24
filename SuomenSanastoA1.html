@@ -136,12 +136,13 @@
     .panel-main .footer-bar { padding-top: 6px; }
     }
 
- #muteBtn:disabled,
- .btn-speak:disabled {
-    opacity: 0.4;
+   #muteBtn:disabled,
+  .btn-speak:disabled {
+    opacity: 0.45;
     cursor: default;
     pointer-events: none;
   }
+
 
 
 
@@ -1301,9 +1302,9 @@ function updateMuteBtn() {
   const b = $("muteBtn");
   b.innerHTML = isMuted ? `${ICONS.volOff} Звук` : `${ICONS.volOn} Звук`;
   b.classList.toggle('muted', isMuted);
-     if (!isAndroid) { b.disabled = true; b.classList.add('muted'); }
-
+  if (!isAndroid) { b.disabled = true; b.classList.remove('muted'); }
 }
+
 function renderChips(l) {
   $("lessonsContainer").innerHTML = l.map(k =>
     `<div class="chip ${selectedLessons.has(k) ? 'active' : ''}" onclick="toggleLesson(${k})">${k}</div>`
