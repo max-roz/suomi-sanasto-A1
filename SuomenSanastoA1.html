@@ -134,7 +134,15 @@
     .panel-main .btn-primary, .panel-main .btn-success, .panel-main .btn-wrong, .panel-main .btn-secondary { height: 36px; }
     .panel-main .stats { margin-top: 6px; padding-top: 5px; }
     .panel-main .footer-bar { padding-top: 6px; }
+    }
+
+ #muteBtn:disabled,
+ .btn-speak:disabled {
+    opacity: 0.4;
+    cursor: default;
+    pointer-events: none;
   }
+
 
 
 
@@ -1207,6 +1215,7 @@ const dictionary = [
 </script>
 
 <script>
+const isAndroid = /Android/i.test(navigator.userAgent);
 const $ = id => document.getElementById(id);
 const STORAGE_KEY = 'sm1_learned_v1', MUTE_KEY = 'sm1_muted_v1', THEME_KEY = 'sm1_theme_v1';
 let isDark = false;
@@ -1292,6 +1301,8 @@ function updateMuteBtn() {
   const b = $("muteBtn");
   b.innerHTML = isMuted ? `${ICONS.volOff} Звук` : `${ICONS.volOn} Звук`;
   b.classList.toggle('muted', isMuted);
+     if (!isAndroid) { b.disabled = true; b.classList.add('muted'); }
+
 }
 function renderChips(l) {
   $("lessonsContainer").innerHTML = l.map(k =>
@@ -1400,6 +1411,7 @@ if ('speechSynthesis' in window) {
 }
 
 function speak(text, lang = 'fi', manual = false) {
+  if (!isAndroid) return;
   if ((isMuted && !manual) || isSpeaking) return;
   const btn = $("speakBtn");
   let fallbackCalled = false;
@@ -1522,6 +1534,9 @@ function renderCard() {
     ? `<div class="umlauts"><button type="button" class="umlaut-btn" onclick="addChar('ä')">ä</button><button type="button" class="umlaut-btn" onclick="addChar('ö')">ö</button><button type="button" class="umlaut-btn" onclick="addChar('å')">å</button></div>`
     : '';
   const hdr = `<div class="header-row"><span class="tag">Тема ${w.k}</span>${umlautHTML}${speakBtnHTML}</div>`;
+if (!isAndroid) {
+  setTimeout(() => { const sb = $("speakBtn"); if (sb) sb.disabled = true; }, 0);
+}
 
   if (currentMode === 'flashcards') {
     const f = isFi ? w.fi : w.ru, b = isFi ? w.ru : w.fi;
